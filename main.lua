@@ -5,9 +5,9 @@ function love.load()
     anim8 = require 'libraries/anim8'
     love.graphics.setDefaultFilter("nearest", "nearest")
     --para não ficar desfocado
-
+    
     sti = require 'libraries/sti'
-    mapas = sti('mapas/test.lua')
+    gameMap = sti('mapas/testMap.lua')
     --para importar mapa (feito no Tiled nesse caso)
 
     player = {}
@@ -72,8 +72,8 @@ end
 
 function love.draw()
     cam:attach()
-        mapas:drawLayer(mapas.layers["terra"])
-        mapas:drawLayer(mapas.layers["arvores"])
+        gameMap:drawLayer(gameMap.layers["terra"])
+        gameMap:drawLayer(gameMap.layers["arvores"])
         --para cada camada do terreno feito no Tiled
         player.anim:draw(player.spriteSheet, player.x, player.y, nil, 6, nil, 6, 9)
         --nil para não mudar a rotação e o sx
