@@ -1,11 +1,18 @@
 function love.load()
-    anim8 = require "libraries/anim8"
+    camera = require 'libraries/camera'
+    cam = camera()
+
+    anim8 = require 'libraries/anim8'
     love.graphics.setDefaultFilter("nearest", "nearest")
     --para não ficar desfocado
 
+    sti = require 'libraries/sti'
+    mapas = sti('mapas/test.lua')
+    --para importar mapa (feito no Tiled nesse caso)
+
     player = {}
-    player.x = 350
-    player.y = 220
+    player.x = 380
+    player.y = 230
     player.speed = 5
     player.spriteSheet = love.graphics.newImage('sprites/player-sheet.png')
     player.grid = anim8.newGrid(12, 18, player.spriteSheet:getWidth(), player.spriteSheet:getHeight()) 
@@ -18,7 +25,7 @@ function love.load()
     player.animations.right = anim8.newAnimation(player.grid('1-4', 3), 0.2)
     player.animations.up = anim8.newAnimation(player.grid('1-4', 4), 0.2)
 
-    player.anim = player.animations.left
+    player.anim = player.animations.down
 
     background = love.graphics.newImage('sprites/background.png')
 end
@@ -59,10 +66,17 @@ function love.update(dt)
     --mudar para o quadro em que ele está parado (no caso é o quadro 2)
 
     player.anim:update(dt)
+
+    cam:lookAt(player.x, player.y)
 end
 
 function love.draw()
-    love.graphics.draw(background, 110, 10)
-    player.anim:draw(player.spriteSheet, player.x, player.y, nil, 4)
-    --nil para não mudar a rotação
+    cam:attach()
+        mapas:drawLayer(mapas.layers["terra"])
+        mapas:drawLayer(mapas.layers["arvores"])
+        --para cada camada do terreno feito no Tiled
+        player.anim:draw(player.spriteSheet, player.x, player.y, nil, 6, nil, 6, 9)
+        --nil para não mudar a rotação e o sx
+        --ox=6 oy=9 (metade da largura e altura do personagem)
+    cam:detach()
 end
