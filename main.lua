@@ -14,7 +14,7 @@ function love.load()
     player.x = 380
     player.y = 230
     player.speed = 5
-    player.spriteSheet = love.graphics.newImage('sprites/player-sheet.png')
+    player.spriteSheet = love.graphics.newImage('sprites/kel.png')
     player.grid = anim8.newGrid(12, 18, player.spriteSheet:getWidth(), player.spriteSheet:getHeight()) 
     --cada quadro (da imagem de sprites do movimento do personagem) para animação do personagem é 12 por 18
     
@@ -27,7 +27,7 @@ function love.load()
 
     player.anim = player.animations.down
 
-    background = love.graphics.newImage('sprites/background.png')
+    --background = love.graphics.newImage('sprites/background.png')
 end
 
 function love.update(dt)
@@ -72,8 +72,12 @@ end
 
 function love.draw()
     cam:attach()
-        gameMap:drawLayer(gameMap.layers["terra"])
+        gameMap:drawLayer(gameMap.layers["terreno"])
         gameMap:drawLayer(gameMap.layers["arvores"])
+        gameMap:drawLayer(gameMap.layers["escadas"])
+        gameMap:drawLayer(gameMap.layers["casas"])
+        
+        --gameMap:drawLayer(gameMap.layers["casas"])
         --para cada camada do terreno feito no Tiled
         player.anim:draw(player.spriteSheet, player.x, player.y, nil, 6, nil, 6, 9)
         --nil para não mudar a rotação e o sx
