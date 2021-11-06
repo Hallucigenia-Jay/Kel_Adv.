@@ -1,4 +1,8 @@
 function love.load()
+    wf = require 'libraries/windfield'
+    world = wf.newWorld(0, 0)
+    -- 0 pois não tem gravidade
+
     camera = require 'libraries/camera'
     cam = camera()
 
@@ -11,9 +15,12 @@ function love.load()
     --para importar mapa (feito no Tiled nesse caso)
 
     player = {}
+    player.collider = world:newBSGRectangleCollider(400, 250, 50, 100, 10)
+    -- x, y, largura, altura, curvatura dos cantos
+    player.collider:setFixedRotation(true)
     player.x = 350
     player.y = 250
-    player.speed = 5
+    player.speed = 300
     player.spriteSheet = love.graphics.newImage('sprites/kel2.png')
     player.grid = anim8.newGrid(12, 18, player.spriteSheet:getWidth(), player.spriteSheet:getHeight()) 
     --cada quadro (da imagem de sprites do movimento do personagem) para animação do personagem é 12 por 18
@@ -28,13 +35,28 @@ function love.load()
     player.anim = player.animations.down
 
     --background = love.graphics.newImage('sprites/background.png')
+
+    walls = {}
+    if gameMap.layers["colisão"]then
+        for i, obj in pairs(gameMap.layers["colisão"].objects) do
+            local wall = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
+            wall:setType('static')
+            --para que os objetos n se desloquem quando interajir com o personagem
+            table.insert(walls, wall)
+        end
+    end
 end
 
 function love.update(dt)
     local isMoving = false
 
+    local vx = 0
+    local vy = 0
+    -- significa que é velocidade 0 pra direção da colisão
+
     if love.keyboard.isDown("right") then
-        player.x = player.x + player.speed
+        vx = player.speed
+        --player.x = player.x + player.speed
         --locomoção pelas setinhas
         player.anim = player.animations.right
         --animação
@@ -43,27 +65,36 @@ function love.update(dt)
     end
     
     if love.keyboard.isDown("left") then
-        player.x = player.x - player.speed
+        vx = player.speed * -1
+        --player.x = player.x - player.speed
         player.anim = player.animations.left
         isMoving = true
     end
 
     if love.keyboard.isDown("down") then
-        player.y = player.y + player.speed
+        vy = player.speed
+        --player.y = player.y + player.speed
         player.anim = player.animations.down
         isMoving = true
     end
 
     if love.keyboard.isDown("up") then
-        player.y = player.y - player.speed
+        vy = player.speed * -1
+        --player.y = player.y - player.speed
         player.anim = player.animations.up
         isMoving = true
     end
+
+    player.collider:setLinearVelocity(vx, vy)
 
     if isMoving == false then
         player.anim:gotoFrame(2)
     end
     --mudar para o quadro em que ele está parado (no caso é o quadro 2)
+
+    world:update(dt)
+    player.x = player.collider:getX()
+    player.y = player.collider:getY()
 
     player.anim:update(dt)
 
@@ -81,5 +112,7 @@ function love.draw()
         player.anim:draw(player.spriteSheet, player.x, player.y, nil, 6, nil, 6, 9)
         --nil para não mudar a rotação e o sx
         --ox=6 oy=9 (metade da largura e altura do personagem)
+
+        --world:draw() --é apenas para ver o contorno das colisões
     cam:detach()
 end
