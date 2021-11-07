@@ -105,7 +105,6 @@ function love.draw()
     cam:attach()
         gameMap:drawLayer(gameMap.layers["terreno"])
         gameMap:drawLayer(gameMap.layers["arvores"])
-        gameMap:drawLayer(gameMap.layers["escadas"])
         gameMap:drawLayer(gameMap.layers["casas"]) 
         
         --para cada camada do terreno feito no Tiled
