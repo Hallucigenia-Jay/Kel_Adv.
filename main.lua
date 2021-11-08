@@ -18,20 +18,21 @@ function love.load()
     player.collider = world:newBSGRectangleCollider(400, 250, 50, 100, 10)
     -- x, y, largura, altura, curvatura dos cantos
     player.collider:setFixedRotation(true)
-    player.x = 350
-    player.y = 250
+    player.x = 400
+    player.y = 200
     player.speed = 300
     player.spriteSheet = love.graphics.newImage('sprites/kel2.png')
     player.grid = anim8.newGrid(12, 18, player.spriteSheet:getWidth(), player.spriteSheet:getHeight()) 
     --cada quadro (da imagem de sprites do movimento do personagem) para animação do personagem é 12 por 18
-    
+
     player.animations = {}
     player.animations.down = anim8.newAnimation(player.grid('1-4', 1), 0.2)
     --quadros de 1-4 colunas, começando da 1° linha a cada 0.2s
     player.animations.left = anim8.newAnimation(player.grid('1-4', 2), 0.2)
     player.animations.right = anim8.newAnimation(player.grid('1-4', 3), 0.2)
     player.animations.up = anim8.newAnimation(player.grid('1-4', 4), 0.2)
-
+    
+    
     player.anim = player.animations.down
 
     --background = love.graphics.newImage('sprites/background.png')
