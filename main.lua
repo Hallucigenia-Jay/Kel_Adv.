@@ -15,10 +15,10 @@ function love.load()
     --para importar mapa (feito no Tiled nesse caso)
 
     player = {}
-    player.collider = world:newBSGRectangleCollider(400, 250, 50, 100, 10)
+    player.collider = world:newBSGRectangleCollider(325, 200, 50, 100, 10)
     -- x, y, largura, altura, curvatura dos cantos
     player.collider:setFixedRotation(true)
-    player.x = 400
+    player.x = 325
     player.y = 200
     player.speed = 300
     player.spriteSheet = love.graphics.newImage('sprites/kel2.png')
