@@ -3,6 +3,8 @@ function love.load()
     world = wf.newWorld(0, 0)
     -- 0 pois não tem gravidade
 
+    --monstros = love.graphics.newImage('sprites/monstros.png')
+
     camera = require 'libraries/camera'
     cam = camera()
 
@@ -115,4 +117,6 @@ function love.draw()
 
         --world:draw() --é apenas para ver o contorno das colisões
     cam:detach()
+
+    --love.graphics.draw(monstros, 0, 0)
 end
