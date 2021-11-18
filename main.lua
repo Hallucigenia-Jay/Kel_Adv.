@@ -21,6 +21,10 @@ function love.load()
 	bullets = {}
 
     player = {}
+
+    player.width = 15
+    player.height = 15
+
     player.collider = world:newBSGRectangleCollider(325, 200, 50, 100, 10)
     -- x, y, largura, altura, curvatura dos cantos
     player.collider:setFixedRotation(true)
