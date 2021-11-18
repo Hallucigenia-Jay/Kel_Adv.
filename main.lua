@@ -9,6 +9,7 @@ function love.load()
     cam = camera()
 
     anim8 = require 'libraries/anim8'
+
     love.graphics.setDefaultFilter("nearest", "nearest")
     --para não ficar desfocado
     
@@ -23,7 +24,7 @@ function love.load()
     player.x = 325
     player.y = 200
     player.speed = 300
-    player.spriteSheet = love.graphics.newImage('sprites/kel2.png')
+    player.spriteSheet = love.graphics.newImage('sprites/kel.png')
     player.grid = anim8.newGrid(12, 18, player.spriteSheet:getWidth(), player.spriteSheet:getHeight()) 
     --cada quadro (da imagem de sprites do movimento do personagem) para animação do personagem é 12 por 18
 
@@ -34,10 +35,17 @@ function love.load()
     player.animations.right = anim8.newAnimation(player.grid('1-4', 3), 0.2)
     player.animations.up = anim8.newAnimation(player.grid('1-4', 4), 0.2)
     
-    
     player.anim = player.animations.down
 
-    --background = love.graphics.newImage('sprites/background.png')
+    player.weapon = 0
+    player.shotCooldown = {}
+    player.armAngle = 0
+    player.velX = 0
+    player.velY = 0
+
+    for itr=0, 3 do
+    player.shotCooldown[itr] = 0
+    end
 
     walls = {}
     if gameMap.layers["colisão"]then
