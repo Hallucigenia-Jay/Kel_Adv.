@@ -17,6 +17,9 @@ function love.load()
     gameMap = sti('mapas/testMap.lua')
     --para importar mapa (feito no Tiled nesse caso)
 
+    bulletSpeed = 250
+	bullets = {}
+
     player = {}
     player.collider = world:newBSGRectangleCollider(325, 200, 50, 100, 10)
     -- x, y, largura, altura, curvatura dos cantos
@@ -36,16 +39,6 @@ function love.load()
     player.animations.up = anim8.newAnimation(player.grid('1-4', 4), 0.2)
     
     player.anim = player.animations.down
-
-    player.weapon = 0
-    player.shotCooldown = {}
-    player.armAngle = 0
-    player.velX = 0
-    player.velY = 0
-
-    for itr=0, 3 do
-    player.shotCooldown[itr] = 0
-    end
 
     walls = {}
     if gameMap.layers["colisão"]then
@@ -109,7 +102,13 @@ function love.update(dt)
 
     player.anim:update(dt)
 
+    for i,v in ipairs(bullets) do
+		v.x = v.x + (v.dx * dt)
+		v.y = v.y + (v.dy * dt)
+	end
+
     cam:lookAt(player.x, player.y)
+
 end
 
 function love.draw()
@@ -117,14 +116,35 @@ function love.draw()
         gameMap:drawLayer(gameMap.layers["terreno"])
         gameMap:drawLayer(gameMap.layers["arvores"])
         gameMap:drawLayer(gameMap.layers["casas"]) 
-        
         --para cada camada do terreno feito no Tiled
+        
         player.anim:draw(player.spriteSheet, player.x, player.y, nil, 6, nil, 6, 9)
         --nil para não mudar a rotação e o sx
         --ox=6 oy=9 (metade da largura e altura do personagem)
 
         --world:draw() --é apenas para ver o contorno das colisões
+
+        for i,v in ipairs(bullets) do
+            love.graphics.circle("fill", v.x, v.y, 3)
+        end
+
     cam:detach()
 
     --love.graphics.draw(monstros, 0, 0)
+end
+
+function love.mousepressed(x, y, button)
+	if button == 1 then
+		local startX = player.x + player.width / 2
+		local startY = player.y + player.height / 2
+		local mouseX = x
+		local mouseY = y
+		
+		local angle = math.atan2((mouseY - startY), (mouseX - startX))
+		
+		local bulletDx = bulletSpeed * math.cos(angle)
+		local bulletDy = bulletSpeed * math.sin(angle)
+		
+		table.insert(bullets, {x = startX, y = startY, dx = bulletDx, dy = bulletDy})
+	end
 end
