@@ -138,17 +138,17 @@ function love.draw()
 end
 
 function love.mousepressed(x, y, button)
-	if button == 1 then
-		local startX = player.x + player.width / 2
-		local startY = player.y + player.height / 2
-		local mouseX = x
-		local mouseY = y
-		
-		local angle = math.atan2((mouseY - startY), (mouseX - startX))
-		
-		local bulletDx = bulletSpeed * math.cos(angle)
-		local bulletDy = bulletSpeed * math.sin(angle)
-		
-		table.insert(bullets, {x = startX, y = startY, dx = bulletDx, dy = bulletDy})
-	end
+    if button == 1 then
+        local startX = player.x + player.width / 2
+        local startY = player.y + player.height / 2
+        local mouseX = x
+        local mouseY = y
+        
+        local angle = math.atan2((mouseY - startY), (mouseX - startX))
+        
+        local bulletDx = bulletSpeed * math.cos(angle)
+        local bulletDy = bulletSpeed * math.sin(angle)
+        
+        table.insert(bullets, {x = startX, y = startY, dx = bulletDx, dy = bulletDy})
+    end
 end
