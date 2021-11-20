@@ -17,6 +17,9 @@ function love.load()
     gameMap = sti('mapas/testMap.lua')
     --para importar mapa (feito no Tiled nesse caso)
 
+    zoisSpeed = 250
+    zois = {}
+
     bulletSpeed = 250
 	bullets = {}
 
@@ -111,7 +114,22 @@ function love.update(dt)
 		v.y = v.y + (v.dy * dt)
 	end
 
+    for k,v in ipairs(zois) do
+		local a = math.getAngle(v.x, v.y, player.x, player.y)
+		v.x = v.x + math.cos(a) * v.speed * dt
+		v.y = v.y + math.sin(a) * v.speed * dt
+	end
+
     cam:lookAt(player.x, player.y)
+
+    local w = love.graphics.getWidth()
+    local h = love.graphics.getHeight()
+    if cam.x < w/2 then
+        cam.x = w/2
+    end
+    if cam.y < h/2 then
+        cam.y = h/2
+    end
 
 end
 
@@ -129,6 +147,10 @@ function love.draw()
         --world:draw() --é apenas para ver o contorno das colisões
 
         for i,v in ipairs(bullets) do
+            love.graphics.circle("fill", v.x, v.y, 3)
+        end
+
+        for k,v in ipairs(zois) do
             love.graphics.circle("fill", v.x, v.y, 3)
         end
 
