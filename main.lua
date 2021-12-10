@@ -7,7 +7,6 @@ function love.load()
 
     camera = require 'libraries/camera'
     cam = camera()
-
     anim8 = require 'libraries/anim8'
 
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -17,17 +16,12 @@ function love.load()
     gameMap = sti('mapas/testMap.lua')
     --para importar mapa (feito no Tiled nesse caso)
 
-    zoisSpeed = 250
-    zois = {}
-
     bulletSpeed = 250
 	bullets = {}
 
     player = {}
-
     player.width = 15
     player.height = 15
-
     player.collider = world:newBSGRectangleCollider(325, 200, 50, 100, 10)
     -- x, y, largura, altura, curvatura dos cantos
     player.collider:setFixedRotation(true)
@@ -44,7 +38,6 @@ function love.load()
     player.animations.left = anim8.newAnimation(player.grid('1-4', 2), 0.2)
     player.animations.right = anim8.newAnimation(player.grid('1-4', 3), 0.2)
     player.animations.up = anim8.newAnimation(player.grid('1-4', 4), 0.2)
-    
     player.anim = player.animations.down
 
     walls = {}
@@ -68,7 +61,6 @@ function love.update(dt)
     if love.keyboard.isDown("right") then
         vx = player.speed
         --player.x = player.x + player.speed
-        --locomoção pelas setinhas
         player.anim = player.animations.right
         --animação
         isMoving = true
@@ -114,16 +106,19 @@ function love.update(dt)
 		v.y = v.y + (v.dy * dt)
 	end
 
-    for k,v in ipairs(zois) do
+    --[[
+    for k,v in ipairs(bullets) do
 		local a = math.getAngle(v.x, v.y, player.x, player.y)
 		v.x = v.x + math.cos(a) * v.speed * dt
 		v.y = v.y + math.sin(a) * v.speed * dt
 	end
+    ]]
 
     cam:lookAt(player.x, player.y)
 
     local w = love.graphics.getWidth()
     local h = love.graphics.getHeight()
+    
     if cam.x < w/2 then
         cam.x = w/2
     end
@@ -147,10 +142,6 @@ function love.draw()
         --world:draw() --é apenas para ver o contorno das colisões
 
         for i,v in ipairs(bullets) do
-            love.graphics.circle("fill", v.x, v.y, 3)
-        end
-
-        for k,v in ipairs(zois) do
             love.graphics.circle("fill", v.x, v.y, 3)
         end
 
