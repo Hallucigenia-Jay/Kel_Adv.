@@ -18,8 +18,15 @@ function Jogo:new()
     gameMap = sti('mapas/testMap.lua')
     --para importar mapa (feito no Tiled nesse caso)
 
-    bulletSpeed = 250
-	bullets = {}
+	bullet = {}
+    bullet.width = 7
+    bullet.height = 7
+    bullet.collider = world:newBSGRectangleCollider(325, 200, 50, 100, 10)
+    bullet.collider:setFixedRotation(true)
+    bullet.x = 325
+    bullet.y = 200
+    bullet.speed = 600
+    bullet.spriteSheet = love.graphics.newImage('sprites/tiro.png')
 
     player = {}
     player.width = 15
@@ -91,6 +98,7 @@ function Jogo:update(dt)
     end
 
     player.collider:setLinearVelocity(vx, vy)
+    bullet.collider:setLinearVelocity(vx, vy)
 
     if isMoving == false then
         player.anim:gotoFrame(2)
@@ -103,20 +111,22 @@ function Jogo:update(dt)
 
     player.anim:update(dt)
 
-    for i,v in ipairs(bullets) do
+    for i,v in ipairs(bullet) do
 		v.x = v.x + (v.dx * dt)
 		v.y = v.y + (v.dy * dt)
 	end
 
+    bullet.ainm:update(dt)
+
     --[[
-    for k,v in ipairs(bullets) do
+    for k,v in ipairs(bullet) do
 		local a = math.getAngle(v.x, v.y, player.x, player.y)
 		v.x = v.x + math.cos(a) * v.speed * dt
 		v.y = v.y + math.sin(a) * v.speed * dt
 	end
     ]]
 
-    cam:lookAt(player.x, player.y)
+    cam:lookAt(player.x, player.y, bullet.x, bullet.y)
 
     local w = love.graphics.getWidth()
     local h = love.graphics.getHeight()
@@ -142,8 +152,11 @@ function Jogo:draw()
 
         --world:draw() --é apenas para ver o contorno das colisões
 
-        for i,v in ipairs(bullets) do
+        for i,v in ipairs(bullet) do
             love.graphics.circle("fill", v.x, v.y, 3)
+            --bullet.spriteSheet = love.graphics.newImage('sprites/tiro.png')
+            --love.graphics.newImage:draw('sprites/tiro.png')
+            --love.graphics.newImage('sprites/tiro.png')
         end
 
     cam:detach()
@@ -160,9 +173,9 @@ function love.mousepressed(x, y, button)
         
         local angle = math.atan2((mouseY - startY), (mouseX - startX))
         
-        local bulletDx = bulletSpeed * math.cos(angle)
-        local bulletDy = bulletSpeed * math.sin(angle)
+        local bulletDx = bullet.speed * math.cos(angle)
+        local bulletDy = bullet.speed * math.sin(angle)
         
-        table.insert(bullets, {x = startX, y = startY, dx = bulletDx, dy = bulletDy})
+        table.insert(bullet, {x = startX, y = startY, dx = bulletDx, dy = bulletDy})
     end
 end
