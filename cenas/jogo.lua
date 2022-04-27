@@ -15,18 +15,11 @@ function Jogo:new()
     --para não ficar desfocado
     
     sti = require 'libraries/sti'
-    gameMap = sti('mapas/testMap.lua')
+    gameMap = sti('mapas/Fase01/testMap.lua')
     --para importar mapa (feito no Tiled nesse caso)
 
-	bullet = {}
-    bullet.width = 7
-    bullet.height = 7
-    bullet.collider = world:newBSGRectangleCollider(325, 200, 50, 100, 10)
-    bullet.collider:setFixedRotation(true)
-    bullet.x = 325
-    bullet.y = 200
-    bullet.speed = 600
-    bullet.spriteSheet = love.graphics.newImage('sprites/tiro.png')
+    bulletSpeed = 250
+	bullets = {}
 
     player = {}
     player.width = 15
@@ -98,7 +91,6 @@ function Jogo:update(dt)
     end
 
     player.collider:setLinearVelocity(vx, vy)
-    bullet.collider:setLinearVelocity(vx, vy)
 
     if isMoving == false then
         player.anim:gotoFrame(2)
@@ -111,22 +103,20 @@ function Jogo:update(dt)
 
     player.anim:update(dt)
 
-    for i,v in ipairs(bullet) do
+    for i,v in ipairs(bullets) do
 		v.x = v.x + (v.dx * dt)
 		v.y = v.y + (v.dy * dt)
 	end
 
-    bullet.ainm:update(dt)
-
     --[[
-    for k,v in ipairs(bullet) do
+    for k,v in ipairs(bullets) do
 		local a = math.getAngle(v.x, v.y, player.x, player.y)
 		v.x = v.x + math.cos(a) * v.speed * dt
 		v.y = v.y + math.sin(a) * v.speed * dt
 	end
     ]]
 
-    cam:lookAt(player.x, player.y, bullet.x, bullet.y)
+    cam:lookAt(player.x, player.y)
 
     local w = love.graphics.getWidth()
     local h = love.graphics.getHeight()
@@ -152,11 +142,8 @@ function Jogo:draw()
 
         --world:draw() --é apenas para ver o contorno das colisões
 
-        for i,v in ipairs(bullet) do
+        for i,v in ipairs(bullets) do
             love.graphics.circle("fill", v.x, v.y, 3)
-            --bullet.spriteSheet = love.graphics.newImage('sprites/tiro.png')
-            --love.graphics.newImage:draw('sprites/tiro.png')
-            --love.graphics.newImage('sprites/tiro.png')
         end
 
     cam:detach()
@@ -173,9 +160,10 @@ function love.mousepressed(x, y, button)
         
         local angle = math.atan2((mouseY - startY), (mouseX - startX))
         
-        local bulletDx = bullet.speed * math.cos(angle)
-        local bulletDy = bullet.speed * math.sin(angle)
+        local bulletDx = bulletSpeed * math.cos(angle)
+        local bulletDy = bulletSpeed * math.sin(angle)
+        local bulletCam = bulletSpeed 
         
-        table.insert(bullet, {x = startX, y = startY, dx = bulletDx, dy = bulletDy})
+        table.insert(bullets, {x = startX, y = startY, dx = bulletDx, dy = bulletDy})
     end
 end
