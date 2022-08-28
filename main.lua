@@ -5,16 +5,16 @@ function love.load()
     Classe = require "classic"
     require "cenas/jogo"
     require "cenas/telaInicial"
-    require "cenas/gameOver"
+    --require "cenas/gameOver"
 
     jogo = Jogo()
     telaInicial = TelaInicial()
-    gameOver = GameOver()
+    --gameOver = GameOver()
 
     cenas = {
         jogo = jogo,
         telaInicial = telaInicial,
-        gameOver = gameOver
+        --gameOver = gameOver
     }
     cenaAtual = "telaInicial"
 end

@@ -4,7 +4,7 @@ function TelaInicial:new()
     self.imagem = love.graphics.newImage("sprites/tela_inicial.png")
     self.opcoes = {"Jogar", "Sair"}
 
-    self.iconeSelecao = love.graphics.newImage("sprites/pinto.png")
+    self.iconeSelecao = love.graphics.newImage("sprites/inimigos.png")
     self.x = largura_tela/2 - 220
     self.y = altura_tela/2 + 60
 

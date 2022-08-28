@@ -18,8 +18,9 @@ function Jogo:new()
     gameMap = sti('mapas/Fase01/testMap.lua')
     --para importar mapa (feito no Tiled nesse caso)
 
+    bullets = {}
     bulletSpeed = 250
-	bullets = {}
+    --bullets.collider =
 
     player = {}
     player.width = 15
@@ -40,8 +41,8 @@ function Jogo:new()
     player.animations.left = anim8.newAnimation(player.grid('1-4', 2), 0.2)
     player.animations.right = anim8.newAnimation(player.grid('1-4', 3), 0.2)
     player.animations.up = anim8.newAnimation(player.grid('1-4', 4), 0.2)
-    player.anim = player.animations.down
 
+    player.anim = player.animations.down
     walls = {}
     if gameMap.layers["colisão"]then
         for i, obj in pairs(gameMap.layers["colisão"].objects) do
@@ -103,6 +104,20 @@ function Jogo:update(dt)
 
     player.anim:update(dt)
 
+    cam:lookAt(player.x, player.y)
+
+    local w = love.graphics.getWidth()
+    local h = love.graphics.getHeight()
+    
+    if cam.x < w/2 then
+        cam.x = w/2
+    end
+    if cam.y < h/2 then
+        cam.y = h/2
+    end
+
+ ---------------
+
     for i,v in ipairs(bullets) do
 		v.x = v.x + (v.dx * dt)
 		v.y = v.y + (v.dy * dt)
@@ -116,17 +131,38 @@ function Jogo:update(dt)
 	end
     ]]
 
-    cam:lookAt(player.x, player.y)
+    function love.mousepressed(x, y, button)
+        if button == 1 then
+            local startX = player.x + player.width / 2
+            local startY = player.y + player.height / 2
+            local mouseX = x
+            local mouseY = y
+            
+            local angle = math.atan2((mouseY - startY), (mouseX - startX))
+            
+            local bulletDx = bulletSpeed * math.cos(angle)
+            local bulletDy = bulletSpeed * math.sin(angle)
+            local bulletCam = bulletSpeed 
+            
+            table.insert(bullets, {x = startX, y = startY, dx = bulletDx, dy = bulletDy})
+        end
+    end
+--[[
+    bullet.anim:update(dt)  --fazer animação para implementar função no código
 
-    local w = love.graphics.getWidth()
-    local h = love.graphics.getHeight()
+    cam:lookAt(bullets.x, bullets.y)
+
+    local mouseX = love.graphics.getWidth()
+    local mouseY = love.graphics.getHeight()
     
-    if cam.x < w/2 then
-        cam.x = w/2
+    if cam.x < mouseX/2 then
+        cam.x = mouseX/2
     end
-    if cam.y < h/2 then
-        cam.y = h/2
+    if cam.y < mouseY/2 then
+        cam.y = mouseY/2
     end
+
+]]
 end
 
 function Jogo:draw()
@@ -149,21 +185,4 @@ function Jogo:draw()
     cam:detach()
 
     --love.graphics.draw(monstros, 0, 0)
-end
-
-function love.mousepressed(x, y, button)
-    if button == 1 then
-        local startX = player.x + player.width / 2
-        local startY = player.y + player.height / 2
-        local mouseX = x
-        local mouseY = y
-        
-        local angle = math.atan2((mouseY - startY), (mouseX - startX))
-        
-        local bulletDx = bulletSpeed * math.cos(angle)
-        local bulletDy = bulletSpeed * math.sin(angle)
-        local bulletCam = bulletSpeed 
-        
-        table.insert(bullets, {x = startX, y = startY, dx = bulletDx, dy = bulletDy})
-    end
 end
